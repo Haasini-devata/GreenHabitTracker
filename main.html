@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Green Habit Tracker</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #cad2c5;
+      color: #2f3e46;
+      margin: 0;
+    }
+
+    header {
+      background-color: #52796f;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .section {
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    button {
+      background-color: #84a98c;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #52796f;
+    }
+
+    canvas {
+      max-width: 50%;
+      padding-top: -160px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🌱 Green Habit Tracker</h1>
+</header>
+
+<div class="container">
+
+  <!-- HABITS -->
+  <div class="section">
+    <h2>Log Daily Habits</h2>
+    <button onclick="logHabit('Cycle to work','CO2',2)">🚲 Cycle to work</button>
+    <button onclick="logHabit('Short shower','Water',10)">🚿 Short shower</button>
+    <button onclick="logHabit('Recycle waste','Waste',1)">♻️ Recycle waste</button>
+    <button onclick="logHabit('Plant-based meal','CO2',1)">🥗 Plant-based meal</button>
+    <button onclick="logHabit('Turn off lights','CO2',1)">💡 Turn off lights</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="section">
+    <h2>Quick Stats</h2>
+    <p id="stats">CO₂: 0kg | Water: 0L | Waste: 0kg</p>
+  </div>
+
+  <!-- CHART -->
+  <div class="section">
+    <h2>Environmental Impact</h2>
+    <canvas id="impactChart" width="250" height="250"></canvas>
+  </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Firebase + Logic -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // 🔥 Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDjKrvlYUimVGMxin-1LRO8WAGayEhVQUg",
+    authDomain: "green-habit-tracker-ce183.firebaseapp.com",
+    projectId: "green-habit-tracker-ce183"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 📊 Local totals
+  const totals = { CO2: 0, Water: 0, Waste: 0 };
+
+  // 📈 Chart
+  const ctx = document.getElementById("impactChart");
+  const chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: ["CO₂ Saved", "Water Saved", "Waste Reduced"],
+      datasets: [{
+        data: [0,0,0],
+        backgroundColor: ["#84a98c", "#cad2c5", "#52796f"]
+      }]
+    }
+  });
+
+  // 🔁 Update UI
+  function updateUI() {
+    document.getElementById("stats").innerText =
+      `CO₂: ${totals.CO2}kg | Water: ${totals.Water}L | Waste: ${totals.Waste}kg`;
+
+    chart.data.datasets[0].data = [
+      totals.CO2,
+      totals.Water,
+      totals.Waste
+    ];
+    chart.update();
+  }
+
+  // 🌱 Log Habit (GLOBAL)
+  window.logHabit = async function(habit, category, impact) {
+    totals[category] += impact;
+    updateUI();
+
+    try {
+      await addDoc(collection(db, "habit_logs"), {
+        habit,
+        category,
+        impact,
+        date: new Date().toISOString().split("T")[0],
+        createdAt: new Date()
+      });
+      console.log("Saved to Firebase");
+    } catch (e) {
+      console.error("Firebase error", e);
+    }
+  };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Vouchers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: linear-gradient(to bottom right, #84a98c, #52796f);
+      color: #fff;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .voucher-box {
+      background: white;
+      color: black;
+      display: inline-block;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      margin-right: 30vh;
+      margin-top: 50px;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    .imgg {
+       width: 400px;
+  transition: opacity 1s ease;
+  opacity: 0.1;
+  margin-left: 98vh;
+    margin-top: -900px;
+    }
+    /* Mobile and small tablet adjustments */
+@media (max-width: 1024px) {
+  .voucher-box {
+    margin-right: 0;
+    margin-top: 20px;
+    width: 90%;
+  }
+
+  .imgg {
+    width: 90%;
+    max-width: 300px;
+    margin: 20px auto 0 auto;
+    display: block;
+    opacity: 0.9;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 600px) {
+  body {
+    padding-top: 20px;
+  }
+
+  .voucher-box {
+    padding: 1.5rem;
+  }
+
+  .imgg {
+    max-width: 250px;
+    
+  }
+}
+
+
+  </style>
+</head>
+<body>
+
+  <div class="voucher-box">
+    <h1>🎁 My Vouchers</h1>
+    <h3>Quality is not an act, it is a habit</h3>
+    <img src="./image.png" alt="">
+    <p id="voucherCount" style="font-size: 1.5rem; font-weight: bold;"></p>
+    <p id="streakInfo" style="font-size: 1.2rem;"></p>
+  </div>
+  <div class="imgg">
+    <img src="./momo插画 _ 莲叶迷宫 - 小红书.jpeg" alt="">
+  </div>
+
+  <script>
+    // Load from localStorage or initialize
+    let vouchers = parseInt(localStorage.getItem("habitVouchers")) || 0;
+    let streakDays = parseInt(localStorage.getItem("habitStreak")) || 0;
+
+    // Example: Increment streak each day (In real app, call this when all habits are done for the day)
+    function completeToday() {
+      streakDays++;
+      localStorage.setItem("habitStreak", streakDays);
+
+      // Check if a month (30 days) streak is complete
+      if (streakDays >= 30) {
+        vouchers++;
+        localStorage.setItem("habitVouchers", vouchers);
+
+        // Reset streak after awarding voucher
+        streakDays = 0;
+        localStorage.setItem("habitStreak", streakDays);
+        alert("🎉 Congrats! You earned a voucher for a 1-month streak!");
+      }
+
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById("voucherCount").textContent = `Total Vouchers Earned: ${vouchers}`;
+      document.getElementById("streakInfo").textContent = `Current Streak: ${streakDays} days`;
+    }
+
+    // Initial display
+    updateDisplay();
+
+    // For demo: Automatically add a streak day each time page reloads
+    // (Replace this with your real habit-completion trigger)
+    completeToday();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- Firebase core SDK -->
+<script type="module">
+  // Import Firebase libraries
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDjKrvlYUimVGMxin-1LRO8WAGayEhVQUg",
+    authDomain: "green-habit-tracker-ce183.firebaseapp.com",
+    projectId: "green-habit-tracker-ce183",
+    storageBucket: "green-habit-tracker-ce183.firebasestorage.app",
+    messagingSenderId: "289770188856",
+    appId: "1:289770188856:web:035789b8d0f58d6e3ef6cd",
+    measurementId: "G-DWFYL1EQ89"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Example: Create account
+  document.getElementById("signupBtn").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Account created!");
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+</script>
+
+</body>
+</html>

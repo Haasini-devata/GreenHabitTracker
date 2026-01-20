@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green Habit Tracker</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">
+      <img src="./Medical leaf logo design vector.jpeg" alt="Green Habit Tracker Logo">
+      <span>Green Habit Tracker</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="./about.html">About</a></li>
+      <li><a href="./main.html">Services</a></li>
+      <li><a href="./streak.html">Streak 🌱</a></li>
+      <li><a href="#">Sign In / Sign Up</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Your Daily Green Reflection</h1>
+    <p>Track eco-friendly habits and build a sustainable lifestyle.</p>
+  </div>
+</section>
+
+<section class="services">
+  <h2>Key Features</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Habit Reflection</h3>
+      <p>Log daily sustainable actions.</p>
+    </div>
+    <div class="card">
+      <h3>Carbon Awareness</h3>
+      <p>Understand your impact.</p>
+    </div>
+    <div class="card">
+      <h3>Consistency Tracking</h3>
+      <p>Build long-term eco habits.</p>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- SIGN UP -->
+<h2>Create Account</h2>
+<input type="email" id="email" placeholder="Enter email" />
+<br><br>
+<input type="password" id="password" placeholder="Enter password" />
+<br><br>
+<button id="signupBtn">Sign Up</button>
+
+<hr>
+
+<!-- HABIT TRACKER -->
+<h2>Log Daily Habit</h2>
+
+<input type="text" id="habit" placeholder="Habit (e.g. No Plastic)" />
+<br><br>
+
+<input type="date" id="date" />
+<br><br>
+
+<select id="status">
+  <option value="Completed">Completed</option>
+  <option value="Not Completed">Not Completed</option>
+</select>
+<br><br>
+
+<button id="saveHabit">Save Habit</button>
+
+<footer class="f">
+  <p>Copyright © 2025. All rights reserved.</p>
+</footer>
+
+<!-- FIREBASE SCRIPT -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDjKrvlYUimVGMxin-1LRO8WAGayEhVQUg",
+    authDomain: "green-habit-tracker-ce183.firebaseapp.com",
+    projectId: "green-habit-tracker-ce183",
+    storageBucket: "green-habit-tracker-ce183.appspot.com",
+    messagingSenderId: "289770188856",
+    appId: "1:289770188856:web:035789b8d0f58d6e3ef6cd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // SIGN UP
+  document.getElementById("signupBtn").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Account created successfully!");
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+
+  // SAVE HABIT TO FIRESTORE
+  document.getElementById("saveHabit").addEventListener("click", async () => {
+    const habit = document.getElementById("habit").value;
+    const date = document.getElementById("date").value;
+    const status = document.getElementById("status").value;
+
+    try {
+      await addDoc(collection(db, "habits"), {
+        habit,
+        date,
+        status,
+        createdAt: new Date()
+      });
+      alert("Habit saved to Firebase!");
+    } catch (error) {
+      alert("Error saving habit");
+      console.error(error);
+    }
+  });
+</script>
+
+</body>
+</html>
